@@ -88,7 +88,7 @@ const PRESETS: { [K in HalftonePreset]: HalftonePalette } = {
 
 const DEFAULT_COLUMNS: FooterColumn[] = [
   { title: "Navigation", links: [{ label: "About", href: "#about" }, { label: "Work", href: "#case-studies" }, { label: "Contact", href: "#contact" }] },
-  { title: "Social", links: [{ label: "LinkedIn", href: "https://www.linkedin.com/in/bhuvana-srii/", external: true }, { label: "Email", href: "mailto:bhuvanasri2605@gmail.com" }] },
+  { title: "Social", links: [{ label: "LinkedIn", href: "https://www.linkedin.com/in/bhuvana-srii/", external: true }, { label: "Email", href: "mailto:chikotibhuvanasri26@gmail.com" }] },
   { title: "Services", links: [{ label: "Social Media Strategy" }, { label: "Content Marketing" }, { label: "Creative Design" }] },
 ]
 

@@ -37,7 +37,7 @@ export function Contact() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full mb-6">
               {/* Email Card */}
               <a
-                href="mailto:bhuvanasri2605@gmail.com"
+                href="mailto:chikotibhuvanasri26@gmail.com"
                 className="flex items-center gap-3 px-3.5 py-3 rounded-xl bg-[#075E59]/50 border border-[#079B78]/35 hover:border-[#B5F0A0]/60 hover:bg-[#075E59]/75 transition-all group shadow-md shadow-[#173D31]/40"
               >
                 <div className="w-9 h-9 rounded-lg bg-[#079B78]/25 flex items-center justify-center text-[#B5F0A0] shrink-0 border border-[#079B78]/40 group-hover:scale-105 transition-transform">
@@ -53,7 +53,7 @@ export function Contact() {
                 <div className="flex flex-col text-left min-w-0">
                   <span className="text-[10px] font-mono uppercase text-[#84918D] tracking-wider">Email</span>
                   <span className="text-xs font-medium text-[#F0F8C9] group-hover:text-[#B5F0A0] transition-colors truncate">
-                    bhuvanasri2605@gmail.com
+                    chikotibhuvanasri26@gmail.com
                   </span>
                 </div>
               </a>

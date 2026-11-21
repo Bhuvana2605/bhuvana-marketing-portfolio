@@ -89,11 +89,11 @@ export default function ResumePage() {
 
           <div className="flex flex-wrap items-center gap-2.5">
             <a
-              href="mailto:bhuvanasri2605@gmail.com"
+              href="mailto:chikotibhuvanasri26@gmail.com"
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#173D31]/80 hover:bg-[#173D31] text-xs font-mono text-[#D4DEDA] border border-[#079B78]/30 transition-colors"
             >
               <span>✉</span>
-              <span>bhuvanasri2605@gmail.com</span>
+              <span>chikotibhuvanasri26@gmail.com</span>
             </a>
             <a
               href="/resume.pdf"
