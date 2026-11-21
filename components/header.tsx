@@ -23,6 +23,7 @@ const NAV_ITEMS: LiquidNavItem[] = [
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [activeTab, setActiveTab] = useState(0)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -60,12 +61,12 @@ export function Header() {
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
         <Link
           href="/"
-          className="hidden md:block text-xl font-playfair font-bold text-[#F0F8C9] hover:text-[#B5F0A0] transition-colors shrink-0"
+          className="block text-lg md:text-xl font-playfair font-bold text-[#F0F8C9] hover:text-[#B5F0A0] transition-colors shrink-0"
         >
           Bhuvana
         </Link>
 
-        <div className="absolute left-1/2 -translate-x-1/2 flex justify-center">
+        <div className="absolute left-1/2 -translate-x-1/2 hidden md:flex justify-center">
           <LiquidNavbar
             items={NAV_ITEMS}
             active={activeTab}
@@ -75,6 +76,51 @@ export function Header() {
           />
         </div>
 
+        <button
+          type="button"
+          className="ml-auto inline-flex h-11 w-11 items-center justify-center rounded-xl border border-[#079B78]/40 bg-[#173D31]/80 text-[#F0F8C9] shadow-lg backdrop-blur-md transition hover:bg-[#075E59]/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B5F0A0] md:hidden"
+          aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+          aria-expanded={isMobileMenuOpen}
+          aria-controls="mobile-site-navigation"
+          onClick={() => setIsMobileMenuOpen((open) => !open)}
+        >
+          {isMobileMenuOpen ? (
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+              <path d="m6 6 12 12M18 6 6 18" />
+            </svg>
+          ) : (
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+              <path d="M4 7h16M4 12h16M4 17h16" />
+            </svg>
+          )}
+        </button>
+
+        <nav
+          id="mobile-site-navigation"
+          aria-label="Mobile navigation"
+          hidden={!isMobileMenuOpen}
+          className="absolute right-0 top-full mt-3 w-[min(20rem,calc(100vw-2rem))] rounded-2xl border border-[#079B78]/40 bg-[#173D31]/95 p-2 shadow-2xl shadow-[#071F19]/50 backdrop-blur-xl md:hidden"
+        >
+          {NAV_ITEMS.map((item, index) => (
+            <a
+              key={item.label}
+              href={item.href}
+              aria-current={activeTab === index ? 'page' : undefined}
+              onClick={() => {
+                setActiveTab(index)
+                setIsMobileMenuOpen(false)
+              }}
+              className={`flex min-h-12 items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B5F0A0] ${
+                activeTab === index
+                  ? 'bg-[#075E59]/75 text-[#F0F8C9]'
+                  : 'text-[#D4DEDA] hover:bg-[#075E59]/45 hover:text-[#F0F8C9]'
+              }`}
+            >
+              <span className="flex h-5 w-5 items-center justify-center text-[#B5F0A0]" aria-hidden="true">{item.icon}</span>
+              <span>{item.label}</span>
+            </a>
+          ))}
+        </nav>
       </div>
     </motion.header>
   )
