@@ -16,7 +16,7 @@ const NAV_ITEMS: LiquidNavItem[] = [
   { label: 'About', href: '#about', icon: NimbusIcons.user, fx: 'wave' },
   { label: 'Experience', href: '#experience', icon: briefCaseIcon, fx: 'spin' },
   { label: 'Work', href: '#work', icon: NimbusIcons.globe, fx: 'spin' },
-  { label: 'Workflow', href: '#workflow', icon: NimbusIcons.drop, fx: 'drop' },
+  { label: 'Toolkit', href: '#skills', icon: NimbusIcons.drop, fx: 'drop' },
   { label: 'Contact', href: '#contact', icon: NimbusIcons.plane, fx: 'plane' },
 ]
 
@@ -29,7 +29,7 @@ export function Header() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20)
 
-      const sectionIds = ['about', 'experience', 'work', 'workflow', 'contact']
+      const sectionIds = ['about', 'experience', 'work', 'skills', 'contact']
       const scrollPosition = window.scrollY + 250
 
       for (let i = sectionIds.length - 1; i >= 0; i--) {

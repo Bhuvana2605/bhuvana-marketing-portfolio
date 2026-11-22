@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900">
+  <defs><linearGradient id="g" x2="0" y2="1"><stop stop-color="#0b7665"/><stop offset="1" stop-color="#173d31"/></linearGradient></defs>
+  <rect width="600" height="900" fill="url(#g)"/>
+  <rect x="24" y="24" width="552" height="852" rx="32" fill="none" stroke="#b5f0a0" stroke-opacity=".65" stroke-width="3"/>
+  <text x="60" y="170" fill="#b5f0a0" font-family="Georgia,serif" font-style="italic" font-size="42">A note to self</text>
+  <text x="60" y="320" fill="#f0f8c9" font-family="Georgia,serif" font-style="italic" font-size="60">Make it</text>
+  <text x="60" y="395" fill="#f0f8c9" font-family="Georgia,serif" font-style="italic" font-size="60">mean something.</text>
+  <path d="M60 455h340" stroke="#b5f0a0" stroke-width="3" stroke-linecap="round"/>
+  <text x="60" y="530" fill="#d4deda" font-family="Arial,sans-serif" font-size="25">Listen closely.</text>
+  <text x="60" y="580" fill="#d4deda" font-family="Arial,sans-serif" font-size="25">Find the human story.</text>
+  <text x="60" y="630" fill="#d4deda" font-family="Arial,sans-serif" font-size="25">Tell it with care.</text>
+  <text x="60" y="790" fill="#b5f0a0" font-family="Arial,sans-serif" font-size="20" letter-spacing="5">BHUVANA SRI CHIKOTI</text>
+</svg>

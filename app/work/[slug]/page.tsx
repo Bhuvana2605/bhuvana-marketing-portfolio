@@ -102,10 +102,18 @@ export default async function WorkDetail({ params }: { params: Promise<{ slug: s
 
   return (
     <main className="min-h-screen bg-[#173D31] text-[#D4DEDA]">
-      <header className="border-b border-[#079B78]/25 px-6 py-5">
-        <div className="mx-auto flex max-w-5xl justify-between">
-          <Link href="/" className="font-playfair text-xl font-bold text-[#F0F8C9]">Bhuvana</Link>
-          <Link href="/#work" className="text-sm text-[#B5F0A0] hover:text-[#F0F8C9]">← Back to featured work</Link>
+      <header className="sticky top-0 z-40 border-b border-[#079B78]/25 bg-[#173D31]/95 px-4 py-4 backdrop-blur-md sm:px-6">
+        <div className="mx-auto max-w-5xl">
+          <div className="flex items-center justify-between gap-4">
+            <Link href="/" className="shrink-0 font-playfair text-xl font-bold text-[#F0F8C9]">Bhuvana</Link>
+            <Link href="/#work" className="shrink-0 text-xs text-[#B5F0A0] hover:text-[#F0F8C9] sm:text-sm">← All projects</Link>
+          </div>
+          <nav aria-label="Portfolio navigation" className="mt-3 flex items-center gap-5 overflow-x-auto whitespace-nowrap text-xs text-[#D4DEDA] sm:gap-6 sm:text-sm">
+            <Link href="/#about" className="hover:text-[#B5F0A0]">About</Link>
+            <Link href="/#experience" className="hover:text-[#B5F0A0]">Experience</Link>
+            <Link href="/#work" className="hover:text-[#B5F0A0]">Work</Link>
+            <Link href="/#contact" className="hover:text-[#B5F0A0]">Contact</Link>
+          </nav>
         </div>
       </header>
 

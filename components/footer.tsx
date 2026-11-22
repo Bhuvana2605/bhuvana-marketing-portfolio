@@ -9,7 +9,7 @@ const FOOTER_COLUMNS: FooterColumn[] = [
       { label: 'About', href: '#about' },
       { label: 'Experience', href: '#experience' },
       { label: 'Featured Work', href: '#work' },
-      { label: 'Workflow', href: '#workflow' },
+      { label: 'Toolkit & capabilities', href: '#skills' },
       { label: 'Contact', href: '#contact' },
     ],
   },

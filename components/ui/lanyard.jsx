@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import * as THREE from 'three';
 
 import './lanyard.css';
@@ -9,7 +10,7 @@ const CARD_SIZES = {
   portrait: [1.6, 2.25],
   landscape: [2.25, 1.6]
 };
-const ANCHORS = { left: 0.27, center: 0.5, right: 0.73 };
+const ANCHORS = { left: 0.12, center: 0.5, right: 0.88 };
 const THICKNESS = 0.018;
 const BEVEL = 0.007;
 const JOINTS = 4;
@@ -716,7 +717,7 @@ const Lanyard = ({
   size = 0.6,
   anchor = 'center',
   strapLength = 0.5,
-  strapImage,
+  strapImage = undefined,
   strapColor = '#111111',
   strapWidth = 0.65,
   metal = 'silver',
@@ -726,12 +727,20 @@ const Lanyard = ({
   breeze = 0.5,
   interactive = true,
   intro = true,
+  freeRoam = false,
   className = '',
-  style
+  style = undefined
 }) => {
   const containerRef = useRef(null);
   const settingsRef = useRef(null);
   const applyRef = useRef(null);
+  const [portalTarget, setPortalTarget] = useState(null);
+
+  useEffect(() => {
+    // Keep the draggable canvas in the hero's own coordinate space. A body
+    // portal sized to the viewport drifted away from its anchor on scroll.
+    setPortalTarget(freeRoam ? document.getElementById('about') : null);
+  }, [freeRoam]);
 
   settingsRef.current = {
     frontImage,
@@ -755,7 +764,8 @@ const Lanyard = ({
     elasticity,
     breeze,
     interactive,
-    intro
+    intro,
+    freeRoam
   };
 
   useEffect(() => {
@@ -920,7 +930,12 @@ const Lanyard = ({
     const frameView = () => {
       const s = settingsRef.current;
       const aspect = view.width / view.height;
-      let viewHeight = layout.height / clamp(s.size, 0.15, 0.9);
+      const anchorMark = s.freeRoam ? document.getElementById('lanyard-origin') : null;
+      const anchorArea = anchorMark?.parentElement?.getBoundingClientRect();
+      const localSize = s.freeRoam && anchorArea
+        ? s.size * (anchorArea.height * 0.82) / view.height
+        : s.size;
+      let viewHeight = layout.height / clamp(localSize, 0.15, 0.9);
       const minimumWidth = layout.width / 0.72;
       if (viewHeight * aspect < minimumWidth) viewHeight = minimumWidth / aspect;
       const viewWidth = viewHeight * aspect;
@@ -932,12 +947,22 @@ const Lanyard = ({
       foilUniforms.foilKey.value.set(-2.5, 4, 6).normalize().transformDirection(camera.matrixWorldInverse);
       foilUniforms.foilFill.value.set(3, -1, 4).normalize().transformDirection(camera.matrixWorldInverse);
       foilUniforms.foilTop.value.set(0.5, 4.5, 8).normalize().transformDirection(camera.matrixWorldInverse);
-      const anchorX = ((ANCHORS[s.anchor] ?? 0.5) - 0.5) * viewWidth;
-      const anchorY = viewHeight / 2 + 0.2;
+      const anchorRect = anchorMark?.getBoundingClientRect();
+      const canvasRect = canvas.getBoundingClientRect();
+      const anchorX = anchorRect
+        ? ((anchorRect.left + anchorRect.width / 2 - canvasRect.left) / view.width - 0.5) * viewWidth
+        : ((ANCHORS[s.anchor] ?? 0.5) - 0.5) * viewWidth;
+      const anchorY = anchorRect
+        ? (0.5 - (anchorRect.top + anchorRect.height / 2 - canvasRect.top) / view.height) * viewHeight
+        : s.freeRoam ? viewHeight * 0.34 : viewHeight / 2 + 0.2;
       const cardTop = viewHeight / 2 - viewHeight * mix(0.12, 0.42, clamp(s.strapLength, 0, 1));
       const hangTop = cardTop + (layout.hangY - layout.height / 2);
       sim.anchor.set(anchorX, anchorY, 0);
-      configureSimulation(sim, layout, anchorY - hangTop);
+      // The free-roam version is anchored to a real screen point. Its strap
+      // length must extend downward from that point, independent of the old
+      // center-based framing calculation used by the contained version.
+      const hangingLength = viewHeight * mix(0.12, 0.42, clamp(s.strapLength, 0, 1));
+      configureSimulation(sim, layout, s.freeRoam ? hangingLength : anchorY - hangTop);
       sim.nodes[0].copy(sim.anchor);
       sim.previous[0].copy(sim.anchor);
     };
@@ -1178,7 +1203,8 @@ const Lanyard = ({
     };
 
     const setCursor = value => {
-      if (canvas.style.cursor !== value) canvas.style.cursor = value;
+      const cursorTarget = settingsRef.current.freeRoam ? document.body : canvas;
+      if (cursorTarget.style.cursor !== value) cursorTarget.style.cursor = value;
     };
 
     const flip = point => {
@@ -1206,9 +1232,11 @@ const Lanyard = ({
         target: hit.point.clone()
       };
       press = { x: event.clientX, y: event.clientY, time: performance.now(), point: hit.point.clone() };
-      canvas.setPointerCapture?.(event.pointerId);
+      if (settingsRef.current.freeRoam) event.target?.setPointerCapture?.(event.pointerId);
+      else canvas.setPointerCapture?.(event.pointerId);
       setCursor('grabbing');
       event.preventDefault();
+      if (settingsRef.current.freeRoam) event.stopImmediatePropagation?.();
       start();
     };
 
@@ -1218,6 +1246,8 @@ const Lanyard = ({
       if (sim.grab) {
         if (press && Math.hypot(event.clientX - press.x, event.clientY - press.y) > 6) press = null;
         raycaster.ray.at(sim.grab.reach, sim.grab.target);
+        event.preventDefault();
+        if (settingsRef.current.freeRoam) event.stopImmediatePropagation?.();
         start();
         return;
       }
@@ -1228,10 +1258,15 @@ const Lanyard = ({
 
     const onPointerUp = event => {
       if (!sim.grab) return;
+      if (settingsRef.current.freeRoam) {
+        event.preventDefault();
+        event.stopImmediatePropagation?.();
+      }
       sim.grab = null;
       if (press && event.type === 'pointerup' && performance.now() - press.time < 450) flip(press.point);
       press = null;
-      canvas.releasePointerCapture?.(event.pointerId);
+      if (settingsRef.current.freeRoam) event.target?.releasePointerCapture?.(event.pointerId);
+      else canvas.releasePointerCapture?.(event.pointerId);
       setCursor(hovering && event.pointerType !== 'touch' ? 'grab' : '');
       start();
     };
@@ -1242,12 +1277,16 @@ const Lanyard = ({
       if (pickCard()) event.preventDefault();
     };
 
-    canvas.addEventListener('pointerdown', onPointerDown);
-    canvas.addEventListener('pointermove', onPointerMove);
-    canvas.addEventListener('pointerup', onPointerUp);
-    canvas.addEventListener('pointercancel', onPointerUp);
-    canvas.addEventListener('lostpointercapture', onPointerUp);
-    canvas.addEventListener('touchstart', onTouchStart, { passive: false });
+    const inputTarget = settingsRef.current.freeRoam ? window : canvas;
+    const captureInput = settingsRef.current.freeRoam;
+    inputTarget.addEventListener('pointerdown', onPointerDown, captureInput);
+    inputTarget.addEventListener('pointermove', onPointerMove, captureInput);
+    inputTarget.addEventListener('pointerup', onPointerUp, captureInput);
+    inputTarget.addEventListener('pointercancel', onPointerUp, captureInput);
+    if (!settingsRef.current.freeRoam) {
+      canvas.addEventListener('lostpointercapture', onPointerUp);
+      canvas.addEventListener('touchstart', onTouchStart, { passive: false });
+    }
 
     const resize = () => {
       view.width = Math.max(1, container.clientWidth);
@@ -1268,7 +1307,21 @@ const Lanyard = ({
     const onVisibility = () => {
       if (!document.hidden) start();
     };
+    let lastScrollY = window.scrollY;
+    let scrollImpulse = 0;
+    const onScroll = () => {
+      const nextScrollY = window.scrollY;
+      const delta = nextScrollY - lastScrollY;
+      lastScrollY = nextScrollY;
+      if (!visible || reducedMotion || Math.abs(delta) < 1) return;
+      scrollImpulse = Math.max(-1, Math.min(1, scrollImpulse + delta * 0.002));
+      sim.body.velocity.x += scrollImpulse * 0.045;
+      sim.body.angular.z += scrollImpulse * 0.025;
+      scrollImpulse *= 0.35;
+      start();
+    };
     document.addEventListener('visibilitychange', onVisibility);
+    window.addEventListener('scroll', onScroll, { passive: true });
 
     applyRef.current = apply;
     resize();
@@ -1280,12 +1333,16 @@ const Lanyard = ({
       resizeObserver.disconnect();
       intersectionObserver.disconnect();
       document.removeEventListener('visibilitychange', onVisibility);
-      canvas.removeEventListener('pointerdown', onPointerDown);
-      canvas.removeEventListener('pointermove', onPointerMove);
-      canvas.removeEventListener('pointerup', onPointerUp);
-      canvas.removeEventListener('pointercancel', onPointerUp);
-      canvas.removeEventListener('lostpointercapture', onPointerUp);
-      canvas.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('scroll', onScroll);
+      if (settingsRef.current.freeRoam) document.body.style.cursor = '';
+      inputTarget.removeEventListener('pointerdown', onPointerDown, captureInput);
+      inputTarget.removeEventListener('pointermove', onPointerMove, captureInput);
+      inputTarget.removeEventListener('pointerup', onPointerUp, captureInput);
+      inputTarget.removeEventListener('pointercancel', onPointerUp, captureInput);
+      if (!settingsRef.current.freeRoam) {
+        canvas.removeEventListener('lostpointercapture', onPointerUp);
+        canvas.removeEventListener('touchstart', onTouchStart);
+      }
       [bodyMesh, frontMesh, backMesh, ring, clampMesh, eyelet, band].forEach(mesh => mesh.geometry?.dispose());
       [frontMaterial, backMaterial, edgeMaterial, metalMaterial, bandMaterial].forEach(material => material.dispose());
       [frontTexture, backTexture, strapTexture, grain, weave].forEach(texture => texture.dispose());
@@ -1293,9 +1350,11 @@ const Lanyard = ({
       renderer.dispose();
       if (canvas.parentNode) canvas.parentNode.removeChild(canvas);
     };
-  }, []);
+  }, [portalTarget]);
 
-  return <div ref={containerRef} className={`lanyard ${className}`.trim()} style={style} />;
+  const lanyard = <div ref={containerRef} className={`lanyard ${freeRoam ? 'lanyard-free-roam' : ''} ${className}`.trim()} style={style} />;
+  if (freeRoam) return portalTarget ? createPortal(lanyard, portalTarget) : null;
+  return lanyard;
 };
 
 export default Lanyard;

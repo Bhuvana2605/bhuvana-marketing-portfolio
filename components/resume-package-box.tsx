@@ -136,8 +136,13 @@ export function ResumeSlipContent() {
   );
 }
 
-export function ResumePackageBox({ className }: { className?: string } = {}) {
-  const [open, setOpen] = useState(false);
+export function ResumePackageBox({ className, open: controlledOpen, onOpenChange }: { className?: string; open?: boolean; onOpenChange?: (open: boolean) => void } = {}) {
+  const [internalOpen, setOpen] = useState(false);
+  const open = controlledOpen ?? internalOpen;
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (controlledOpen === undefined) setOpen(nextOpen);
+    onOpenChange?.(nextOpen);
+  };
 
   return (
     <div className={`relative z-20 flex flex-col items-center justify-center my-2 pointer-events-auto w-full max-w-md ${className || ''}`}>
@@ -156,7 +161,7 @@ export function ResumePackageBox({ className }: { className?: string } = {}) {
       <div className="w-full flex justify-center">
         <PackageBox
           open={open}
-          onOpenChange={setOpen}
+          onOpenChange={handleOpenChange}
           maxWidth={360}
           openLabel="📦 Click to unbox resume"
           closeLabel="Fold box close"
@@ -169,7 +174,11 @@ export function ResumePackageBox({ className }: { className?: string } = {}) {
             accent: "#B5F0A0", // Soft Mint accent
           }}
         >
-          <ResumeSlipContent />
+          <div className="flex h-full flex-col items-center justify-center border border-[#079B78]/40 bg-[#075E59] p-5 text-center text-[#D4DEDA]">
+            <span className="font-mono text-[8px] uppercase tracking-[0.2em] text-[#B5F0A0]">A little note</span>
+            <p className="mt-4 max-w-[14rem] font-serif text-lg italic leading-snug text-[#F0F8C9]">Tell me what you have in mind. I’d love to hear from you.</p>
+            <span className="mt-5 text-[#B5F0A0]" aria-hidden="true">✦</span>
+          </div>
         </PackageBox>
       </div>
     </div>
