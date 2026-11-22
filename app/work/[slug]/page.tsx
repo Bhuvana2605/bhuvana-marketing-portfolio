@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { ArrowUpRight } from 'lucide-react'
 
 type CampaignImage = { src: string; label: string }
 
@@ -101,38 +102,38 @@ export default async function WorkDetail({ params }: { params: Promise<{ slug: s
   if (!project) notFound()
 
   return (
-    <main className="min-h-screen bg-[#173D31] text-[#D4DEDA]">
-      <header className="sticky top-0 z-40 border-b border-[#079B78]/25 bg-[#173D31]/95 px-4 py-4 backdrop-blur-md sm:px-6">
+    <main className="min-h-screen bg-[#FEF0B6] text-[#472F26]">
+      <header className="sticky top-0 z-40 border-b border-[#472F26]/25 bg-[#FEF0B6]/95 px-4 py-4 backdrop-blur-md sm:px-6">
         <div className="mx-auto max-w-5xl">
           <div className="flex items-center justify-between gap-4">
-            <Link href="/" className="shrink-0 font-playfair text-xl font-bold text-[#F0F8C9]">Bhuvana</Link>
-            <Link href="/#work" className="shrink-0 text-xs text-[#B5F0A0] hover:text-[#F0F8C9] sm:text-sm">← All projects</Link>
+            <Link href="/" className="shrink-0 font-playfair text-xl font-bold text-[#472F26]">Bhuvana</Link>
+            <Link href="/#work" className="shrink-0 text-xs text-[#472F26] hover:text-[#472F26] sm:text-sm">← All projects</Link>
           </div>
-          <nav aria-label="Portfolio navigation" className="mt-3 flex items-center gap-5 overflow-x-auto whitespace-nowrap text-xs text-[#D4DEDA] sm:gap-6 sm:text-sm">
-            <Link href="/#about" className="hover:text-[#B5F0A0]">About</Link>
-            <Link href="/#experience" className="hover:text-[#B5F0A0]">Experience</Link>
-            <Link href="/#work" className="hover:text-[#B5F0A0]">Work</Link>
-            <Link href="/#contact" className="hover:text-[#B5F0A0]">Contact</Link>
+          <nav aria-label="Portfolio navigation" className="mt-3 flex items-center gap-5 overflow-x-auto whitespace-nowrap text-xs text-[#472F26] sm:gap-6 sm:text-sm">
+            <Link href="/#about" className="hover:text-[#472F26]">About</Link>
+            <Link href="/#experience" className="hover:text-[#472F26]">Experience</Link>
+            <Link href="/#work" className="hover:text-[#472F26]">Work</Link>
+            <Link href="/#contact" className="hover:text-[#472F26]">Contact</Link>
           </nav>
         </div>
       </header>
 
       <article className="mx-auto max-w-5xl px-6 py-12 sm:py-20">
-        <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#B5F0A0]">{project.category} · {project.period}</p>
-        <h1 className="mt-4 max-w-4xl font-playfair text-4xl font-bold text-[#F0F8C9] sm:text-6xl">{project.title}</h1>
+        <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#472F26]">{project.category} · {project.period}</p>
+        <h1 className="mt-4 max-w-4xl font-playfair text-4xl font-bold text-[#472F26] sm:text-6xl">{project.title}</h1>
 
         <div className="mt-8 grid gap-10 md:grid-cols-[1fr_280px]">
           <div>
-            <h2 className="font-playfair text-2xl font-bold text-[#F0F8C9]">Project overview</h2>
+            <h2 className="font-playfair text-2xl font-bold text-[#472F26]">Project overview</h2>
             <p className="mt-4 leading-7">{project.intro}</p>
-            <h2 className="mt-8 font-playfair text-2xl font-bold text-[#F0F8C9]">Strategy & execution</h2>
+            <h2 className="mt-8 font-playfair text-2xl font-bold text-[#472F26]">Strategy & execution</h2>
             <ul className="mt-4 space-y-3">
-              {project.details.map((detail) => <li key={detail} className="flex gap-3 leading-7"><span className="text-[#B5F0A0]">✦</span>{detail}</li>)}
+              {project.details.map((detail) => <li key={detail} className="flex gap-3 leading-7"><span className="text-[#472F26]">✦</span>{detail}</li>)}
             </ul>
           </div>
-          <aside className="h-fit rounded-2xl border border-[#079B78]/35 bg-[#075E59]/50 p-6">
-            <p className="font-mono text-xs uppercase tracking-widest text-[#B5F0A0]">Key outcome</p>
-            <p className="mt-3 font-playfair text-2xl font-bold text-[#F0F8C9]">{project.result}</p>
+          <aside className="h-fit rounded-2xl border border-[#472F26]/35 bg-[#BBD3E0]/50 p-6">
+            <p className="font-mono text-xs uppercase tracking-widest text-[#472F26]">Key outcome</p>
+            <p className="mt-3 font-playfair text-2xl font-bold text-[#472F26]">{project.result}</p>
           </aside>
         </div>
 
@@ -140,16 +141,16 @@ export default async function WorkDetail({ params }: { params: Promise<{ slug: s
           <section className="mt-12">
             <div className="mb-5 flex items-end justify-between gap-4">
               <div>
-                <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#B5F0A0]">Selected campaign work</p>
-                <h2 className="mt-2 font-playfair text-3xl font-bold text-[#F0F8C9]">Posts &amp; creatives</h2>
+                <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#472F26]">Selected campaign work</p>
+                <h2 className="mt-2 font-playfair text-3xl font-bold text-[#472F26]">Posts &amp; creatives</h2>
               </div>
-              <span className="text-sm text-[#D4DEDA]/70">{project.gallery.length} examples</span>
+              <span className="text-sm text-[#472F26]/70">{project.gallery.length} examples</span>
             </div>
             <div className="grid gap-5 sm:grid-cols-2">
               {project.gallery.map((image) => (
-                <figure key={image.src} className="overflow-hidden rounded-2xl border border-[#079B78]/35 bg-[#0A2724]/70 p-3">
+                <figure key={image.src} className="overflow-hidden rounded-2xl border border-[#472F26]/35 bg-[#FEF0B6]/70 p-3">
                   <img src={image.src} alt={image.label} className="h-[420px] w-full rounded-xl object-contain" />
-                  <figcaption className="px-2 pb-1 pt-3 text-sm text-[#D4DEDA]">{image.label}</figcaption>
+                  <figcaption className="px-2 pb-1 pt-3 text-sm text-[#472F26]">{image.label}</figcaption>
                 </figure>
               ))}
             </div>
@@ -158,17 +159,17 @@ export default async function WorkDetail({ params }: { params: Promise<{ slug: s
 
         {'reels' in project && (
           <section className="mt-12">
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#B5F0A0]">Selected work</p>
-            <h2 className="mt-2 font-playfair text-3xl font-bold text-[#F0F8C9]">Instagram Reels</h2>
+            <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#472F26]">Selected work</p>
+            <h2 className="mt-2 font-playfair text-3xl font-bold text-[#472F26]">Instagram Reels</h2>
             <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {project.reels.map((reel, index) => {
                 const id = typeof reel === 'string' ? reel : reel.id
                 const views = typeof reel === 'string' ? null : reel.views
                 return (
-                  <div key={id} className="overflow-hidden rounded-2xl border border-[#079B78]/35 bg-[#0A2724]/70 p-3">
+                  <div key={id} className="overflow-hidden rounded-2xl border border-[#472F26]/35 bg-[#FEF0B6]/70 p-3">
                     <iframe title={`${slug === 'beena' ? 'Beena' : 'Khusboo'} campaign Reel ${index + 1}`} src={`https://www.instagram.com/reel/${id}/embed`} className="aspect-[9/16] w-full rounded-xl" allowFullScreen loading="lazy" />
-                    {views && <p className="mt-3 px-2 font-semibold text-[#F0F8C9]">{views} views</p>}
-                    <a href={`https://www.instagram.com/reel/${id}/`} target="_blank" rel="noreferrer" className="mt-2 block px-2 text-sm text-[#B5F0A0] hover:text-[#F0F8C9]">Open Reel {index + 1} on Instagram ↗</a>
+                    {views && <p className="mt-3 px-2 font-semibold text-[#472F26]">{views} views</p>}
+                    <a href={`https://www.instagram.com/reel/${id}/`} target="_blank" rel="noreferrer" className="mt-2 inline-flex items-center gap-1 px-2 text-sm text-[#472F26] hover:text-[#472F26]">Open Reel {index + 1} on Instagram <ArrowUpRight aria-hidden="true" className="h-3.5 w-3.5" /></a>
                   </div>
                 )
               })}
@@ -177,7 +178,7 @@ export default async function WorkDetail({ params }: { params: Promise<{ slug: s
         )}
 
         {slug === 'deepak' ? (
-          <p className="mt-10 rounded-2xl border border-dashed border-[#079B78]/40 bg-[#075E59]/25 p-5 text-sm leading-6 text-[#D4DEDA]/80">
+          <p className="mt-10 rounded-2xl border border-dashed border-[#472F26]/40 bg-[#BBD3E0]/25 p-5 text-sm leading-6 text-[#472F26]/80">
             Reel gallery can be added here when the performing Reel links are ready.
           </p>
         ) : null}

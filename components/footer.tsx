@@ -43,11 +43,11 @@ export function Footer() {
       label="Bhuvana"
       meta={`Social Media Manager • © ${currentYear}`}
       columns={FOOTER_COLUMNS}
-      preset="aurora"
+      preset="cream"
       palette={{
-        background: '#173D31',
-        ink: '#D4DEDA',
-        warm: '#B5F0A0',
+        background: '#FEF0B6',
+        ink: '#472F26',
+        warm: '#BBD3E0',
       }}
       backToTop={true}
       height="520px"

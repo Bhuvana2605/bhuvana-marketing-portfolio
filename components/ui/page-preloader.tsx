@@ -54,7 +54,7 @@ export function PagePreloader({
     <div
       suppressHydrationWarning
       onClick={handleSkip}
-      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#173D31]/95 backdrop-blur-md transition-all duration-700 ease-out cursor-pointer select-none ${
+      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#FEF0B6]/95 backdrop-blur-md transition-all duration-700 ease-out cursor-pointer select-none ${
         fadingOut ? "opacity-0 pointer-events-none scale-105" : "opacity-100 scale-100"
       }`}
       aria-label="Loading portfolio"
@@ -66,23 +66,23 @@ export function PagePreloader({
             size={90}
             dotSize={11}
             speed={1.9}
-            color="#B5F0A0"
-            className="text-[#B5F0A0] drop-shadow-[0_0_16px_rgba(181,240,160,0.45)]"
+            color="#BBD3E0"
+            className="text-[#472F26] drop-shadow-[0_0_16px_rgba(187,211,224,0.45)]"
           />
         </div>
 
         {/* Brand Typography */}
         <div className="flex flex-col items-center gap-1.5" suppressHydrationWarning>
-          <span className="font-mono text-xs uppercase tracking-[0.35em] font-semibold text-[#F0F8C9]">
+          <span className="font-mono text-xs uppercase tracking-[0.35em] font-semibold text-[#472F26]">
             {title}
           </span>
-          <span className="text-[11px] font-mono tracking-wider text-[#D4DEDA]">
+          <span className="text-[11px] font-mono tracking-wider text-[#472F26]">
             {subtitle}
           </span>
         </div>
 
         {/* Subtle skip prompt */}
-        <span className="mt-4 text-[10px] font-mono uppercase tracking-widest text-[#84918D] transition-opacity hover:text-[#B5F0A0]">
+        <span className="mt-4 text-[10px] font-mono uppercase tracking-widest text-[#472F26] transition-opacity hover:text-[#472F26]">
           Click anywhere to skip
         </span>
       </div>

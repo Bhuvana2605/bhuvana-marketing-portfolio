@@ -1,9 +1,10 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
-import { Playfair_Display, Inter } from 'next/font/google'
+import { Caveat, Inter, Playfair_Display } from 'next/font/google'
 import './globals.css'
 
-const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair' })
+const playfair = Playfair_Display({ subsets: ['latin'], weight: ['500', '600', '700'], variable: '--font-playfair' })
+const handwriting = Caveat({ subsets: ['latin'], weight: ['500', '600', '700'], variable: '--font-handwriting' })
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
 export const metadata: Metadata = {
@@ -30,8 +31,8 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  colorScheme: 'dark',
-  themeColor: '#173D31',
+  colorScheme: 'light',
+  themeColor: '#FEF0B6',
 }
 
 export default function RootLayout({
@@ -40,8 +41,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
-      <body className="antialiased bg-background">
+    <html lang="en" className={`${playfair.variable} ${handwriting.variable} ${inter.variable}`}>
+      <body className="font-inter antialiased bg-background">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

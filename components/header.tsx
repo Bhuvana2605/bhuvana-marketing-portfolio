@@ -52,7 +52,7 @@ export function Header() {
   return (
     <motion.header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-[#173D31]/85 backdrop-blur-md py-2.5 shadow-lg shadow-[#173D31]/40' : 'bg-transparent py-4'
+        isScrolled ? 'bg-[#FEF0B6]/85 backdrop-blur-md py-2.5 shadow-lg shadow-[#472F26]/40' : 'bg-transparent py-4'
       }`}
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
@@ -61,7 +61,7 @@ export function Header() {
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
         <Link
           href="/"
-          className="block text-lg md:text-xl font-playfair font-bold text-[#F0F8C9] hover:text-[#B5F0A0] transition-colors shrink-0"
+          className="block text-lg md:text-xl font-playfair font-bold text-[#472F26] hover:text-[#472F26] transition-colors shrink-0"
         >
           Bhuvana
         </Link>
@@ -78,7 +78,7 @@ export function Header() {
 
         <button
           type="button"
-          className="ml-auto inline-flex h-11 w-11 items-center justify-center rounded-xl border border-[#079B78]/40 bg-[#173D31]/80 text-[#F0F8C9] shadow-lg backdrop-blur-md transition hover:bg-[#075E59]/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B5F0A0] md:hidden"
+          className="ml-auto inline-flex h-11 w-11 items-center justify-center rounded-xl border border-[#472F26]/40 bg-[#FEF0B6]/80 text-[#472F26] shadow-lg backdrop-blur-md transition hover:bg-[#BBD3E0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#BBD3E0] md:hidden"
           aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
           aria-expanded={isMobileMenuOpen}
           aria-controls="mobile-site-navigation"
@@ -99,7 +99,7 @@ export function Header() {
           id="mobile-site-navigation"
           aria-label="Mobile navigation"
           hidden={!isMobileMenuOpen}
-          className="absolute right-0 top-full mt-3 w-[min(20rem,calc(100vw-2rem))] rounded-2xl border border-[#079B78]/40 bg-[#173D31]/95 p-2 shadow-2xl shadow-[#071F19]/50 backdrop-blur-xl md:hidden"
+          className="absolute right-0 top-full mt-3 w-[min(20rem,calc(100vw-2rem))] rounded-2xl border border-[#472F26]/40 bg-[#FEF0B6]/95 p-2 shadow-2xl shadow-[#472F26]/50 backdrop-blur-xl md:hidden"
         >
           {NAV_ITEMS.map((item, index) => (
             <a
@@ -110,13 +110,13 @@ export function Header() {
                 setActiveTab(index)
                 setIsMobileMenuOpen(false)
               }}
-              className={`flex min-h-12 items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#B5F0A0] ${
+              className={`flex min-h-12 items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#BBD3E0] ${
                 activeTab === index
-                  ? 'bg-[#075E59]/75 text-[#F0F8C9]'
-                  : 'text-[#D4DEDA] hover:bg-[#075E59]/45 hover:text-[#F0F8C9]'
+                  ? 'bg-[#BBD3E0]/75 text-[#472F26]'
+                  : 'text-[#472F26] hover:bg-[#BBD3E0]/50 hover:text-[#472F26]'
               }`}
             >
-              <span className="flex h-5 w-5 items-center justify-center text-[#B5F0A0]" aria-hidden="true">{item.icon}</span>
+              <span className="flex h-5 w-5 items-center justify-center text-[#472F26]" aria-hidden="true">{item.icon}</span>
               <span>{item.label}</span>
             </a>
           ))}

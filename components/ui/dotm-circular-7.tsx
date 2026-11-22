@@ -38,28 +38,28 @@ export interface DotmCircular7Props {
 
 const COLOR_PRESETS: Record<DotmColorPreset, { fill: string; glow?: string }> = {
   "solid-theme": { fill: "currentColor", glow: "currentColor" },
-  "solid-mint": { fill: "#34d399", glow: "#34d399" },
+  "solid-mint": { fill: "#BBD3E0", glow: "#BBD3E0" },
   "solid-coral": { fill: "#ff6b4a", glow: "#ff6b4a" },
   "solid-amber": { fill: "#f59e0b", glow: "#f59e0b" },
   "grad-sunset": {
-    fill: "linear-gradient(135deg, #ff5f6d 0%, #ffc371 52%, #ffe29a 100%)",
-    glow: "#ff8b73",
+    fill: "linear-gradient(135deg, #472F26 0%, #FEF0B6 52%, #BBD3E0 100%)",
+    glow: "#BBD3E0",
   },
   "grad-ocean": {
-    fill: "linear-gradient(140deg, #00c6ff 0%, #0072ff 48%, #4facfe 100%)",
-    glow: "#2f8fff",
+    fill: "linear-gradient(140deg, #BBD3E0 0%, #472F26 48%, #FEF0B6 100%)",
+    glow: "#BBD3E0",
   },
   "grad-neon": {
-    fill: "linear-gradient(145deg, #b4ff39 0%, #39ffb6 46%, #00d4ff 100%)",
-    glow: "#59ffc8",
+    fill: "linear-gradient(145deg, #FEF0B6 0%, #BBD3E0 46%, #472F26 100%)",
+    glow: "#BBD3E0",
   },
   "grad-aurora": {
-    fill: "linear-gradient(145deg, #ff3cac 0%, #784ba0 45%, #2b86c5 100%)",
-    glow: "#9c64bf",
+    fill: "linear-gradient(145deg, #472F26 0%, #BBD3E0 45%, #FEF0B6 100%)",
+    glow: "#BBD3E0",
   },
   "grad-fire": {
-    fill: "linear-gradient(145deg, #ff512f 0%, #dd2476 45%, #ffb347 100%)",
-    glow: "#ff512f",
+    fill: "linear-gradient(145deg, #472F26 0%, #FEF0B6 45%, #BBD3E0 100%)",
+    glow: "#BBD3E0",
   },
 };
 

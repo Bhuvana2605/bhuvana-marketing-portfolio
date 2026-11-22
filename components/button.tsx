@@ -24,11 +24,11 @@ export function Button({
 
   const variants = {
     primary:
-      "bg-[#B5F0A0] text-[#173D31] font-semibold hover:bg-[#cbf7b8] hover:shadow-[0_0_20px_rgba(181,240,160,0.35)] shadow-xs",
+      "bg-[#472F26] text-[#FEF0B6] font-semibold hover:bg-[#472F26] hover:shadow-[0_0_20px_rgba(187,211,224,0.35)] shadow-xs",
     secondary:
-      "bg-transparent border border-[#B5F0A0] text-[#B5F0A0] hover:bg-[#B5F0A0]/10 hover:shadow-[0_0_15px_rgba(181,240,160,0.2)] shadow-xs",
+      "bg-transparent border border-[#BBD3E0] text-[#472F26] hover:bg-[#472F26]/10 hover:shadow-[0_0_15px_rgba(187,211,224,0.2)] shadow-xs",
     outline:
-      "bg-transparent border border-[#B5F0A0] text-[#B5F0A0] hover:bg-[#B5F0A0] hover:text-[#173D31] hover:shadow-[0_0_15px_rgba(181,240,160,0.25)]",
+      "bg-transparent border border-[#BBD3E0] text-[#472F26] hover:bg-[#BBD3E0] hover:text-[#472F26] hover:shadow-[0_0_15px_rgba(187,211,224,0.25)]",
   };
 
   const sizes = {

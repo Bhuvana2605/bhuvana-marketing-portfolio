@@ -57,7 +57,7 @@ export function Stats() {
   }
 
   return (
-    <section className="py-20 sm:py-24 px-4 sm:px-6 lg:px-8 bg-[#075E59]/35 border-y border-[#079B78]/25 backdrop-blur-sm">
+    <section className="py-20 sm:py-24 px-4 sm:px-6 lg:px-8 bg-[#BBD3E0]/35 border-y border-[#472F26]/25 backdrop-blur-sm">
       <motion.div
         className="max-w-6xl mx-auto"
         variants={containerVariants}
@@ -73,14 +73,14 @@ export function Stats() {
               className="text-center"
             >
               <div className="mb-2">
-                <span className="text-4xl sm:text-5xl font-playfair font-bold text-[#B5F0A0] drop-shadow-[0_0_15px_rgba(181,240,160,0.3)]">
+                <span className="text-4xl sm:text-5xl font-playfair font-bold text-[#472F26] drop-shadow-[0_0_15px_rgba(187,211,224,0.3)]">
                   <CountingNumber value={stat.number} suffix={stat.suffix} />
                 </span>
               </div>
-              <h3 className="text-lg font-semibold text-[#F0F8C9] mb-1">
+              <h3 className="text-lg font-semibold text-[#472F26] mb-1">
                 {stat.label}
               </h3>
-              <p className="text-[#D4DEDA] text-sm">
+              <p className="text-[#472F26] text-sm">
                 {stat.description}
               </p>
             </motion.div>

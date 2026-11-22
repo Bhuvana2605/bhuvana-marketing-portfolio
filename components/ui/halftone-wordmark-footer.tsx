@@ -47,7 +47,7 @@ export interface HalftoneWordmarkFooterProps {
   columns?: FooterColumn[]
   /** Show the back-to-top link. It scrolls the window to 0. Defaults to true. */
   backToTop?: boolean
-  /** Starting colours. Defaults to "forest" (matches portfolio theme) or "night". */
+  /** Starting colours. Defaults to the portfolio's wine palette or "night". */
   preset?: HalftonePreset
   /** Colour overrides, merged over the preset. */
   palette?: { background?: string; ink?: string; warm?: string }
@@ -76,14 +76,14 @@ export interface HalftoneWordmarkFooterProps {
 }
 
 const PRESETS: { [K in HalftonePreset]: HalftonePalette } = {
-  night: { background: "#0c0c0b", ink: "#e9e4da", warm: "#e9762b" },
-  paper: { background: "#efebe3", ink: "#17150f", warm: "#c2361c" },
-  ember: { background: "#160a06", ink: "#f2c48c", warm: "#ff5a1f" },
-  cobalt: { background: "#0d1b4d", ink: "#dfe7ff", warm: "#ffcd3c" },
-  forest: { background: "#1e2722", ink: "#faf7f0", warm: "#a8c7a1" },
-  cream: { background: "#faf7f0", ink: "#2f3a33", warm: "#5a8852" },
-  midnight: { background: "#0F3C65", ink: "#FFF2BA", warm: "#FFFBE8" },
-  aurora: { background: "#173D31", ink: "#D4DEDA", warm: "#B5F0A0" },
+  night: { background: "#472F26", ink: "#BBD3E0", warm: "#BBD3E0" },
+  paper: { background: "#FEF0B6", ink: "#472F26", warm: "#BBD3E0" },
+  ember: { background: "#472F26", ink: "#BBD3E0", warm: "#BBD3E0" },
+  cobalt: { background: "#472F26", ink: "#FEF0B6", warm: "#BBD3E0" },
+  forest: { background: "#472F26", ink: "#FEF0B6", warm: "#BBD3E0" },
+  cream: { background: "#FEF0B6", ink: "#472F26", warm: "#BBD3E0" },
+  midnight: { background: "#472F26", ink: "#BBD3E0", warm: "#BBD3E0" },
+  aurora: { background: "#472F26", ink: "#FEF0B6", warm: "#BBD3E0" },
 }
 
 const DEFAULT_COLUMNS: FooterColumn[] = [
@@ -195,7 +195,7 @@ export default function HalftoneWordmarkFooter({
   meta = "Social Media Manager • Content Strategist",
   columns = DEFAULT_COLUMNS,
   backToTop = true,
-  preset = "forest",
+  preset = "aurora",
   palette,
   dotGap = 6,
   radius = 80,
@@ -209,7 +209,7 @@ export default function HalftoneWordmarkFooter({
   className = "",
   children,
 }: HalftoneWordmarkFooterProps) {
-  const colors = { ...(PRESETS[preset] || PRESETS.forest), ...(palette || {}) }
+  const colors = { ...(PRESETS[preset] || PRESETS.aurora), ...(palette || {}) }
   const rootRef = React.useRef<HTMLElement | null>(null)
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null)
   const opts = React.useRef({ colors, dotGap, radius, crop, grain, interactive, fontFamily, fontWeight, wordmark })

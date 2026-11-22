@@ -887,7 +887,9 @@ const Lanyard = ({
     let applied = {};
     let strapScale = STRAP_WIDTH;
     let tileRatio = 2;
+    let pixelRatio = 0;
     let raf = 0;
+    let resizeFrame = 0;
     let last = performance.now();
     let time = 0;
     let visible = true;
@@ -897,6 +899,7 @@ const Lanyard = ({
     let press = null;
     let imageToken = 0;
     const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+    const coarsePointer = window.matchMedia('(pointer: coarse)');
 
     const paintFaces = () => {
       const s = settingsRef.current;
@@ -957,6 +960,26 @@ const Lanyard = ({
         : s.freeRoam ? viewHeight * 0.34 : viewHeight / 2 + 0.2;
       const cardTop = viewHeight / 2 - viewHeight * mix(0.12, 0.42, clamp(s.strapLength, 0, 1));
       const hangTop = cardTop + (layout.hangY - layout.height / 2);
+      const anchorDeltaX = anchorX - sim.anchor.x;
+      const anchorDeltaY = anchorY - sim.anchor.y;
+      if (placed && (anchorDeltaX !== 0 || anchorDeltaY !== 0)) {
+        sim.nodes.forEach(node => { node.x += anchorDeltaX; node.y += anchorDeltaY; });
+        sim.previous.forEach(node => { node.x += anchorDeltaX; node.y += anchorDeltaY; });
+        sim.body.position.x += anchorDeltaX;
+        sim.body.position.y += anchorDeltaY;
+        sim.body.previous.x += anchorDeltaX;
+        sim.body.previous.y += anchorDeltaY;
+        if (sim.grab) {
+          sim.grab.from.x += anchorDeltaX;
+          sim.grab.from.y += anchorDeltaY;
+          sim.grab.target.x += anchorDeltaX;
+          sim.grab.target.y += anchorDeltaY;
+        }
+        if (press) {
+          press.point.x += anchorDeltaX;
+          press.point.y += anchorDeltaY;
+        }
+      }
       sim.anchor.set(anchorX, anchorY, 0);
       // The free-roam version is anchored to a real screen point. Its strap
       // length must extend downward from that point, independent of the old
@@ -985,7 +1008,13 @@ const Lanyard = ({
         ring.position.set(0, layout.ringY, 0);
         applied.framingKey = '';
       }
-      const framingKey = `${layoutKey}|${s.size}|${s.anchor}|${s.strapLength}|${view.width}|${view.height}`;
+      const anchorMark = s.freeRoam ? document.getElementById('lanyard-origin') : null;
+      const anchorRect = anchorMark?.getBoundingClientRect();
+      const canvasRect = canvas.getBoundingClientRect();
+      const anchorFrame = anchorRect
+        ? `${anchorRect.left - canvasRect.left}|${anchorRect.top - canvasRect.top}|${anchorMark.parentElement?.clientHeight}`
+        : '';
+      const framingKey = `${layoutKey}|${s.size}|${s.anchor}|${s.strapLength}|${view.width}|${view.height}|${anchorFrame}`;
       if (framingKey !== applied.framingKey) {
         frameView();
         if (!placed) {
@@ -1093,7 +1122,8 @@ const Lanyard = ({
         if (side.lengthSq() < 1e-10) side.copy(i > 0 ? sides[i - 1] : scratch.a.set(1, 0, 0));
         side.normalize();
         if (i > 0 && side.dot(sides[i - 1]) < 0) side.negate();
-        const angle = -sim.twist * Math.pow(Math.min(1, i / (SAMPLES - 1) / held), 1.3);
+        const twistProgress = held > 1e-4 ? Math.min(1, i / (SAMPLES - 1) / held) : 1;
+        const angle = sim.twist === 0 ? 0 : -sim.twist * Math.pow(twistProgress, 1.3);
         facing.crossVectors(tangent, side);
         across.copy(side).multiplyScalar(Math.cos(angle)).addScaledVector(facing, Math.sin(angle));
         facing.crossVectors(tangent, across);
@@ -1219,62 +1249,107 @@ const Lanyard = ({
       body.angular.addScaledVector(up, FLIP_SPIN * direction);
     };
 
-    const onPointerDown = event => {
-      if (!settingsRef.current.interactive || event.button > 0) return;
+    const beginGrab = (event, captureTarget) => {
+      if (!settingsRef.current.interactive) return false;
       toPointer(event);
       const hit = pickCard();
-      if (!hit) return;
+      if (!hit) return false;
       sim.grab = {
         local: hit.point.clone().sub(sim.body.position).applyQuaternion(sim.body.quaternion.clone().invert()),
         rotation: sim.body.quaternion.clone(),
         reach: hit.distance,
         from: hit.point.clone(),
-        target: hit.point.clone()
+        target: hit.point.clone(),
+        captureTarget
       };
       press = { x: event.clientX, y: event.clientY, time: performance.now(), point: hit.point.clone() };
-      if (settingsRef.current.freeRoam) event.target?.setPointerCapture?.(event.pointerId);
-      else canvas.setPointerCapture?.(event.pointerId);
-      setCursor('grabbing');
-      event.preventDefault();
-      if (settingsRef.current.freeRoam) event.stopImmediatePropagation?.();
+      start();
+      return true;
+    };
+
+    const moveGrab = event => {
+      toPointer(event);
+      if (press && Math.hypot(event.clientX - press.x, event.clientY - press.y) > 6) press = null;
+      raycaster.ray.at(sim.grab.reach, sim.grab.target);
       start();
     };
 
+    const endGrab = (event, allowFlip) => {
+      if (!sim.grab) return;
+      const { captureTarget } = sim.grab;
+      sim.grab = null;
+      if (allowFlip && press && performance.now() - press.time < 450) flip(press.point);
+      press = null;
+      if (captureTarget && event.pointerId != null) {
+        try {
+          if (captureTarget.hasPointerCapture?.(event.pointerId)) captureTarget.releasePointerCapture(event.pointerId);
+        } catch {}
+      }
+      setCursor(hovering ? 'grab' : '');
+      start();
+    };
+
+    const onPointerDown = event => {
+      if (event.pointerType === 'touch' || event.button > 0) return;
+      const captureTarget = settingsRef.current.freeRoam ? event.target : canvas;
+      if (!beginGrab(event, captureTarget)) return;
+      try { captureTarget?.setPointerCapture?.(event.pointerId); } catch {}
+      setCursor('grabbing');
+      event.preventDefault();
+      if (settingsRef.current.freeRoam) event.stopImmediatePropagation?.();
+    };
+
     const onPointerMove = event => {
-      if (!settingsRef.current.interactive) return;
-      toPointer(event);
+      if (!settingsRef.current.interactive || event.pointerType === 'touch') return;
       if (sim.grab) {
-        if (press && Math.hypot(event.clientX - press.x, event.clientY - press.y) > 6) press = null;
-        raycaster.ray.at(sim.grab.reach, sim.grab.target);
+        moveGrab(event);
         event.preventDefault();
         if (settingsRef.current.freeRoam) event.stopImmediatePropagation?.();
-        start();
         return;
       }
-      if (event.pointerType === 'touch') return;
+      toPointer(event);
       hovering = !!pickCard();
       setCursor(hovering ? 'grab' : '');
     };
 
     const onPointerUp = event => {
-      if (!sim.grab) return;
+      if (event.pointerType === 'touch' || !sim.grab) return;
       if (settingsRef.current.freeRoam) {
         event.preventDefault();
         event.stopImmediatePropagation?.();
       }
-      sim.grab = null;
-      if (press && event.type === 'pointerup' && performance.now() - press.time < 450) flip(press.point);
-      press = null;
-      if (settingsRef.current.freeRoam) event.target?.releasePointerCapture?.(event.pointerId);
-      else canvas.releasePointerCapture?.(event.pointerId);
-      setCursor(hovering && event.pointerType !== 'touch' ? 'grab' : '');
-      start();
+      endGrab(event, event.type === 'pointerup');
     };
 
     const onTouchStart = event => {
       if (!settingsRef.current.interactive || event.touches.length !== 1) return;
-      toPointer(event.touches[0]);
-      if (pickCard()) event.preventDefault();
+      const touch = event.changedTouches[0];
+      const touchPoint = { clientX: touch.clientX, clientY: touch.clientY };
+      if (!beginGrab(touchPoint, null)) return;
+      if (event.cancelable) event.preventDefault();
+      setCursor('grabbing');
+    };
+
+    const onTouchMove = event => {
+      if (!sim.grab) return;
+      if (event.touches.length !== 1) {
+        endGrab(event, false);
+        return;
+      }
+      const touch = event.touches[0];
+      moveGrab({ clientX: touch.clientX, clientY: touch.clientY });
+      if (event.cancelable) event.preventDefault();
+    };
+
+    const onTouchEnd = event => {
+      if (!sim.grab) return;
+      if (event.cancelable) event.preventDefault();
+      endGrab(event, true);
+    };
+
+    const onTouchCancel = event => {
+      if (!sim.grab) return;
+      endGrab(event, false);
     };
 
     const inputTarget = settingsRef.current.freeRoam ? window : canvas;
@@ -1283,22 +1358,41 @@ const Lanyard = ({
     inputTarget.addEventListener('pointermove', onPointerMove, captureInput);
     inputTarget.addEventListener('pointerup', onPointerUp, captureInput);
     inputTarget.addEventListener('pointercancel', onPointerUp, captureInput);
+    inputTarget.addEventListener('touchstart', onTouchStart, { capture: captureInput, passive: false });
+    inputTarget.addEventListener('touchmove', onTouchMove, { capture: captureInput, passive: false });
+    inputTarget.addEventListener('touchend', onTouchEnd, { capture: captureInput, passive: false });
+    inputTarget.addEventListener('touchcancel', onTouchCancel, { capture: captureInput, passive: false });
     if (!settingsRef.current.freeRoam) {
       canvas.addEventListener('lostpointercapture', onPointerUp);
-      canvas.addEventListener('touchstart', onTouchStart, { passive: false });
     }
 
     const resize = () => {
-      view.width = Math.max(1, container.clientWidth);
-      view.height = Math.max(1, container.clientHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-      renderer.setSize(view.width, view.height, false);
+      resizeFrame = 0;
+      const width = Math.max(1, container.clientWidth);
+      const height = Math.max(1, container.clientHeight);
+      const nextPixelRatio = Math.min(window.devicePixelRatio || 1, coarsePointer.matches ? 1.5 : 2);
+      const backingSizeChanged = width !== view.width || height !== view.height || nextPixelRatio !== pixelRatio;
+      view.width = width;
+      view.height = height;
+      if (nextPixelRatio !== pixelRatio) {
+        pixelRatio = nextPixelRatio;
+        renderer.setPixelRatio(pixelRatio);
+      }
+      if (backingSizeChanged) renderer.setSize(width, height, false);
       apply();
       render();
     };
 
-    const resizeObserver = new ResizeObserver(resize);
+    const scheduleResize = () => {
+      if (!resizeFrame) resizeFrame = requestAnimationFrame(resize);
+    };
+    const resizeObserver = new ResizeObserver(scheduleResize);
     resizeObserver.observe(container);
+    window.addEventListener('resize', scheduleResize, { passive: true });
+    window.addEventListener('orientationchange', scheduleResize, { passive: true });
+    window.visualViewport?.addEventListener('resize', scheduleResize, { passive: true });
+    if (coarsePointer.addEventListener) coarsePointer.addEventListener('change', scheduleResize);
+    else coarsePointer.addListener?.(scheduleResize);
     const intersectionObserver = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
       if (visible) start();
@@ -1329,9 +1423,15 @@ const Lanyard = ({
     return () => {
       alive = false;
       cancelAnimationFrame(raf);
+      cancelAnimationFrame(resizeFrame);
       applyRef.current = null;
       resizeObserver.disconnect();
       intersectionObserver.disconnect();
+      window.removeEventListener('resize', scheduleResize);
+      window.removeEventListener('orientationchange', scheduleResize);
+      window.visualViewport?.removeEventListener('resize', scheduleResize);
+      if (coarsePointer.removeEventListener) coarsePointer.removeEventListener('change', scheduleResize);
+      else coarsePointer.removeListener?.(scheduleResize);
       document.removeEventListener('visibilitychange', onVisibility);
       window.removeEventListener('scroll', onScroll);
       if (settingsRef.current.freeRoam) document.body.style.cursor = '';
@@ -1339,9 +1439,12 @@ const Lanyard = ({
       inputTarget.removeEventListener('pointermove', onPointerMove, captureInput);
       inputTarget.removeEventListener('pointerup', onPointerUp, captureInput);
       inputTarget.removeEventListener('pointercancel', onPointerUp, captureInput);
+      inputTarget.removeEventListener('touchstart', onTouchStart, captureInput);
+      inputTarget.removeEventListener('touchmove', onTouchMove, captureInput);
+      inputTarget.removeEventListener('touchend', onTouchEnd, captureInput);
+      inputTarget.removeEventListener('touchcancel', onTouchCancel, captureInput);
       if (!settingsRef.current.freeRoam) {
         canvas.removeEventListener('lostpointercapture', onPointerUp);
-        canvas.removeEventListener('touchstart', onTouchStart);
       }
       [bodyMesh, frontMesh, backMesh, ring, clampMesh, eyelet, band].forEach(mesh => mesh.geometry?.dispose());
       [frontMaterial, backMaterial, edgeMaterial, metalMaterial, bandMaterial].forEach(material => material.dispose());

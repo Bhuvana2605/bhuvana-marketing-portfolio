@@ -59,7 +59,7 @@ const caseStudies: CaseStudy[] = [
 
 export function CaseStudies() {
   return (
-    <section id="work" className="py-20 sm:py-24 px-4 sm:px-6 lg:px-8 bg-[#075E59]/30 border-y border-[#079B78]/25 backdrop-blur-xs">
+    <section id="work" className="py-20 sm:py-24 px-4 sm:px-6 lg:px-8 bg-[#BBD3E0]/30 border-y border-[#472F26]/25 backdrop-blur-xs">
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -68,11 +68,11 @@ export function CaseStudies() {
           transition={{ duration: 0.6 }}
           className="mb-20"
         >
-          <span className="text-[#B5F0A0] font-semibold text-sm tracking-widest uppercase">
+          <span className="text-[#472F26] font-semibold text-sm tracking-widest uppercase">
             Case Studies
           </span>
 
-          <h2 className="text-4xl sm:text-5xl font-playfair font-bold mt-2 text-[#F0F8C9]">
+          <h2 className="text-4xl sm:text-5xl font-playfair font-bold mt-2 text-[#472F26]">
             Featured Work
           </h2>
         </motion.div>
@@ -93,44 +93,44 @@ export function CaseStudies() {
               {/* LEFT */}
 
               <div>
-                <h3 className="text-3xl sm:text-4xl font-playfair font-bold mb-8 text-[#F0F8C9]">
+                <h3 className="text-3xl sm:text-4xl font-playfair font-bold mb-8 text-[#472F26]">
                   {study.title}
                 </h3>
 
                 <div className="space-y-8">
 
                   <div>
-                    <p className="text-xs uppercase tracking-widest text-[#B5F0A0] font-semibold">
+                    <p className="text-xs uppercase tracking-widest text-[#472F26] font-semibold">
                       Role
                     </p>
 
-                    <p className="mt-2 text-lg text-[#F0F8C9]">
+                    <p className="mt-2 text-lg text-[#472F26]">
                       {study.role}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-xs uppercase tracking-widest text-[#B5F0A0] font-semibold">
+                    <p className="text-xs uppercase tracking-widest text-[#472F26] font-semibold">
                       Duration
                     </p>
 
-                    <p className="mt-2 text-lg text-[#F0F8C9]">
+                    <p className="mt-2 text-lg text-[#472F26]">
                       {study.duration}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-xs uppercase tracking-widest text-[#B5F0A0] font-semibold">
+                    <p className="text-xs uppercase tracking-widest text-[#472F26] font-semibold">
                       Overview
                     </p>
 
-                    <p className="mt-2 leading-8 text-[#D4DEDA]">
+                    <p className="mt-2 leading-8 text-[#472F26]">
                       {study.overview}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-xs uppercase tracking-widest text-[#B5F0A0] font-semibold">
+                    <p className="text-xs uppercase tracking-widest text-[#472F26] font-semibold">
                       Responsibilities
                     </p>
 
@@ -138,9 +138,9 @@ export function CaseStudies() {
                       {study.responsibilities.map((item, idx) => (
                         <li
                           key={idx}
-                          className="flex gap-3 text-[#D4DEDA]"
+                          className="flex gap-3 text-[#472F26]"
                         >
-                          <span className="w-2 h-2 rounded-full bg-[#079B78] mt-2 shrink-0" />
+                          <span className="w-2 h-2 rounded-full bg-[#472F26] mt-2 shrink-0" />
                           <span>{item}</span>
                         </li>
                       ))}
@@ -158,7 +158,7 @@ export function CaseStudies() {
 
                 <motion.div
                   whileHover={{ scale: 1.02 }}
-                  className="overflow-hidden rounded-2xl shadow-xl shadow-[#173D31]/60 border border-[#079B78]/35"
+                  className="overflow-hidden rounded-2xl shadow-xl shadow-[#472F26]/60 border border-[#472F26]/35"
                 >
                   <Image
                     src={study.images[0]}
@@ -178,7 +178,7 @@ export function CaseStudies() {
                     <motion.div
                       key={idx}
                       whileHover={{ scale: 1.04 }}
-                      className="overflow-hidden rounded-xl shadow-md border border-[#079B78]/35"
+                      className="overflow-hidden rounded-xl shadow-md border border-[#472F26]/35"
                     >
                       <Image
                         src={image}
